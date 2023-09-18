@@ -14,7 +14,7 @@ const initWebRoutes = (app) => {
     // patch,handler
     router.get("/", homeCotroller.handleHelloWorld);
     router.get("/user", homeCotroller.handleUserPage);
-    
+    router.post("/user/create-user", homeCotroller.handleCreateNewUser)
 
     return app.use("/", router);
 }
