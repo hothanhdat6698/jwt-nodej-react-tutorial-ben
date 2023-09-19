@@ -16,9 +16,7 @@
         ></script>
     </head>
     <body>
-        <div>
-                 
-        </div>
+        <div></div>
         <div class="container">
             <div class="row">
                 <div class="user-infor-container">
@@ -76,7 +74,7 @@
                     <table class="table table-hover table-bordered">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col">Id</th>
                                 <th scope="col">email</th>
                                 <th scope="col">username</th>
                                 <th>Aactions</th>
@@ -84,18 +82,25 @@
                         </thead>
                         <tbody>
                             <% userList.forEach(function(item,index){ %>
-                                <tr>
-                                    <th scope="row"><%= index +1 %></th>
-                                    <td><%= item.email %></td>
-                                    <td><%= item.username %></td>
-                                    <td>
-                                        <button class="btn btn-warning">Edit</button>
-                                        <button class="btn btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                            <% }) %>  
-                            
-                            
+                            <tr>
+                                <th scope="row"><%= item.id %></th>
+                                <td><%= item.email %></td>
+                                <td><%= item.username %></td>
+                                <td>
+                                    <button class="btn btn-warning">
+                                        Edit
+                                    </button>
+                                    <form style="display: inline-block;" action="/delete-user/<%= item.id %>" method="POST">
+                                        <button
+                                            class="btn btn-danger"
+                                            type="submit"
+                                        >
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
                         </tbody>
                     </table>
                 </div>
