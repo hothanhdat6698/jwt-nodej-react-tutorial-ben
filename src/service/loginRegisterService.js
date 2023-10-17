@@ -1,6 +1,9 @@
+require("dotenv").config();
 import db from "../models/index";
 import bcrypt from "bcryptjs";
 import { Op } from "sequelize";
+import { getGroupWithRoles } from "../service/JWTService";
+import { createJWT } from "../middleware/JWTAction";
 
 const salt = bcrypt.genSaltSync(10);
 
@@ -59,6 +62,7 @@ const registerNewUser = async (rawUserData) => {
             username: rawUserData.username,
             password: hashPassword,
             phone: rawUserData.phone,
+            groupId: 4,
         });
         return {
             EM: "A user is created succsessfully",
@@ -74,7 +78,7 @@ const registerNewUser = async (rawUserData) => {
 };
 
 const checkPassword = (inputPassword, hashPassword) => {
-    return bcrypt.compareSync(inputPassword,hashPassword); // true
+    return bcrypt.compareSync(inputPassword, hashPassword); // true
 };
 
 const handleUserLogin = async (rawData) => {
@@ -93,19 +97,30 @@ const handleUserLogin = async (rawData) => {
                 user.password
             );
             if (isCorrectPassword === true) {
+                // let token
+
+                // test roles:
+                let groupWithRoles = await getGroupWithRoles(user);
+                let payload = {
+                    email: user.email,
+                    groupWithRoles,
+                    username: user.username,
+                    expiresIn: process.env.JWT_EXPPIRES_IN,
+                };
+                let token = createJWT(payload);
                 return {
                     EM: "ok!",
                     EC: 0,
-                    DT: "",
+                    DT: {
+                        access_token: token,
+                        groupWithRoles,
+                        email: user.email,
+                        username: user.username,
+                    },
                 };
             }
         }
-        console.log(
-            "Not found user with email/phone",
-            rawData.valueLogin,
-            "password",
-            rawData.password
-        );
+
         return {
             EM: "Your email/phone number or password is incorrect",
             EC: 1,
